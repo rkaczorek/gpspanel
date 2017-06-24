@@ -1,0 +1,212 @@
+<!--
+  Copyright(c) 2017 Radek Kaczorek  <rkaczorek AT gmail DOT com>
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License version 2 as published by the Free Software Foundation.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+
+ You should have received a copy of the GNU Library General Public License
+ along with this library; see the file COPYING.LIB.  If not, write to
+ the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ Boston, MA 02110-1301, USA.
+-->
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="Content-Language" content="en,en-us"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.2.0/ol.css" type="text/css">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/socket.io.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.2.0/ol.js"></script>
+	<script type="text/javascript">
+		<!--
+		function LoadMap() {
+			document.getElementById("map").firstChild.data = "";
+
+			/* Set default to London */
+			var lon = -0.118092;
+			var lat = 51.509865;
+
+			map = new ol.Map({
+				target: "map",
+				layers: [
+					new ol.layer.Tile({
+						source: new ol.source.OSM()
+					})
+				],
+				view: new ol.View({
+					center: ol.proj.fromLonLat([lon, lat]),
+					zoom: 4
+				})
+			});
+
+			var center = new ol.geom.Point(
+				ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')
+			);
+
+			iconFeature = new ol.Feature({
+				geometry: center
+			});
+
+			var iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					anchor: [0.5, 1.0],
+					anchorXUnits: 'fraction',
+					anchorYUnits: 'fraction',
+					src: 'assets/img/marker.png'
+				})
+			});
+
+			iconFeature.setStyle(iconStyle);
+
+			var vectorSource = new ol.source.Vector({
+				features: [iconFeature]
+			});
+
+			var vectorLayer = new ol.layer.Vector({
+				source: vectorSource
+			});
+
+			map.addLayer(vectorLayer);
+		}
+		
+		function UpdateMapPos(lon,lat) {
+			iconFeature.setGeometry(new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')));
+			map.getView().animate({
+				center: ol.proj.fromLonLat([lon, lat]),
+				duration: 1000
+			});
+		}
+		-->
+	</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port: '');
+            var socket = io.connect(url);
+            socket.on('gpsdata', function(gps) {
+                $("#gpstime").html(gps.gpstime);
+				$("#latitude").html(gps.latitude);
+				$("#longitude").html(gps.longitude);
+				$("#altitude").html(gps.altitude);
+				$("#mode").html(gps.mode);
+				$("#sats").html(gps.sats);
+				$("#hdop").html(gps.hdop);
+				$("#vdop").html(gps.vdop);
+				$("#gpssats").html(gps.satellites);
+				if (gps.gpstime) {
+					var d = new Date(gps.gpstime);
+					var date = d.getUTCFullYear() + "-" + ("0" + d.getUTCMonth()).substr(-2) + "-" + ("0" + d.getUTCDate()).substr(-2) + "T" + ("0" + d.getUTCHours()).substr(-2) + ":" + ("0" + d.getUTCMinutes()).substr(-2) + ":" + ("0" + d.getUTCSeconds()).substr(-2);
+					$("#gtime").html(date);
+				}
+				if (gps.latitude && gps.longitude) {
+					var lat = gps.latitude;
+					var lon = gps.longitude;
+
+					UpdateMapPos(lon,lat);
+					
+					latdeg = parseInt(lat);
+					latmin = parseInt((lat - latdeg)*3600/60);
+					latsec = ((lat - latdeg - latmin/60)*3600).toFixed(4);
+					londeg = parseInt(lon);
+					lonmin = parseInt((lon - londeg)*3600/60);
+					lonsec = ((lon - londeg - lonmin/60)*3600).toFixed(4);
+					latrad = latdeg + ":" + ("0" + latmin).substr(-2) + ":" + ("0" + latsec).substr(-7);
+					lonrad = londeg + ":" + ("0" + lonmin).substr(-2) + ":" + ("0" + lonsec).substr(-7);
+					$("#lat").html(latrad);
+					$("#lon").html(lonrad);
+				}
+				if (gps.skymap) {
+					$("#skymap").attr("src", "data:image/png;base64,"+gps.skymap);
+					document.getElementById("gpsfix").style.display="none";
+				}
+				if (gps.mode > 1) {
+					document.getElementById("gpsfix").style.display="none";
+				} else {
+					document.getElementById("gpsfix").style.display="block";
+				}
+            });
+        });
+    </script>
+</head>
+<body onload="LoadMap()">
+	<div class="container">
+		<h1>GPS Information</h1>
+		<div id="coordtime">
+			<span class="coordlabel"><b>Latitude: </b></span><span id="lat" class="coord"></span>
+			<span class="coordlabel"><b>Longitude: </b></span><span id="lon" class="coord"></span><br />
+			<span class="timelabel"><b>UTC time: </b></span><span id="gtime" class="time"></span>
+		</div>
+		<div id="displayctl">
+			<button id="togglemap" onclick="togglemap();">Map</button>
+			<button id="toggleskymap" onclick="toggleskymap();">Sky Map</button>
+			<button id="togglegpsdetails" onclick="togglegpsdetails();">GPS Info</button>
+		</div>
+		<div id="mapcontainer">
+			<div id="map" class="map">
+				Loading...
+				<noscript>
+					<span class='warning'>You must enable javascript to view the maps.</span><br/>
+				</noscript>
+			</div>
+		</div>
+		<div id="skymapcontainer">
+			<img id="skymap" src="assets/img/skymap.png"/>
+			<p id="legend" >A filled circle means the satellite was used in the last fix. Colors indicate signal strength in dB.</p>
+		</div>
+		<div id="gpsdetailscontainer">
+			<div id="gpsdetails">
+				<div id="gpsinfo">
+					<table>
+						<tr><th colspan=2 align=left><h2>GPS Status</h2></th></tr>
+						<tr><td><b>Time</b></td><td><span id="gpstime"></span></td></tr>
+						<tr><td><b>Latitude</b></td><td><span id="latitude"></span></td></tr>
+						<tr><td><b>Longitude</b></td><td><span id="longitude"></span></td></tr>
+						<tr><td><b>Altitude</b></td><td><span id="altitude"></span></td></tr>
+						<tr><td><b>Fix Type</b></td><td><span id="mode"></span></td></tr>
+						<tr><td><b>Satellites</b></td><td><span id="sats"></span></td></tr>
+						<tr><td><b>HDOP</b></td><td><span id="hdop"></span></td></tr>
+						<tr><td><b>VDOP</b></td><td><span id="vdop"></span></td></tr>
+					</table>
+				</div>
+				<div id="gpssats">
+					<table>
+						<tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>
+					</table>
+				</div>
+				<div id="gpsfix">
+						<p>Waiting for GPS fix...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	function togglemap() {
+			document.getElementById("mapcontainer").style.display="block";
+			document.getElementById("skymapcontainer").style.display="none";
+			document.getElementById("gpsdetailscontainer").style.display="none";
+	}
+	function toggleskymap() {
+			document.getElementById("mapcontainer").style.display="none";
+			document.getElementById("skymapcontainer").style.display="block";
+			document.getElementById("gpsdetailscontainer").style.display="none";
+	}
+	function togglegpsdetails() {
+			document.getElementById("mapcontainer").style.display="none";
+			document.getElementById("skymapcontainer").style.display="none";
+			document.getElementById("gpsdetailscontainer").style.display="block";
+	}
+	</script>
+</body>
+</html>
