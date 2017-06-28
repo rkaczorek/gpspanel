@@ -9,7 +9,7 @@ GPS Panel is based on [Python Flask](http://flask.pocoo.org/) micro-framework. I
 
 ```
 $ sudo apt-get -y install python-gps
-$ sudo sudo -H pip install Flask Flask-SocketIO gevent Pillow
+$ sudo -H pip install Flask Flask-SocketIO gevent Pillow
 ```
 
 or
