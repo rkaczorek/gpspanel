@@ -16,14 +16,15 @@
  Boston, MA 02110-1301, USA.
 */
 
-@font-face {font-family: 'Adequate Extra Light';font-style: normal;src: local('?'), url('adequate.extra-light.ttf') format('truetype');}
+@font-face {font-family: 'Roboto Light';font-style: normal;src: local('?'), url('Roboto-Light.ttf') format('truetype');}
 
 body {
 	float: left;
-	background:white;
-	font-family: 'Adequate Extra Light', Arial, Helvetica;
+	background: rgb(110, 132, 163);
+	font-family: 'Roboto Light', Arial, Helvetica;
 	font-size:16px;
-	color: black;
+	font-weight: normal;
+	color: #fff;
 	padding: 0;
 }
 
@@ -35,10 +36,10 @@ h1 {
 	border-radius: 5px;
 	margin-top: 0px;
 	padding: 0px 5px 15px 35px;
-	font-size: 16px;
-	font-weight: normal;
+	font-family: 'Roboto Light', Arial, Helvetica;
+	font-size: 20px;
 	color: white;
-	height: 1.5em;
+	height: 1.2em;
 }
 
 h2 {
@@ -55,8 +56,8 @@ a:hover {
 }
 
 button {
-	font-family: 'Adequate Extra Light', Arial, Helvetica;
 	margin-top: 5px;
+	width: 157px;
 }
 
 .warning {
@@ -70,9 +71,8 @@ button {
 #coordtime {
 	width: 480px;
 	margin-top: 10px;
-	font-weight: bold;
-	font-size:0.85em;
-	color: grey;
+	margin-bottom: 10px;
+	color: #eee;
 }
 
 #coordtime span {
@@ -82,25 +82,20 @@ button {
 }
 
 .coordlabel {
-	font-weight: normal;
-	color: grey;
-	font-size: 0.85em;
+	font-size: 0.8em;
 }
 
 .coord {
     width: 150px;
 	margin-left: 5px;
 	font-weight: bold;
-	color: black;
-	font-size: 1.0em;
+	color: white;
 }
 
 .timelabel {
 	width: 100px;
 	margin-top: 5px;
-	font-weight: normal;
-	color: grey;
-	font-size: 0.85em;
+	font-size: 0.8em;
 }
 
 .time {
@@ -108,12 +103,10 @@ button {
 	margin-top: 5px;
 	margin-left: 5px;
 	font-weight: bold;
-	color: black;
-	font-size: 1.0em;
+	color: white;
 }
 
 #displayctl {
-	width: 480px;
 	margin-top: 5px;
 }
 
@@ -124,6 +117,7 @@ button {
 
 #mapcontainer {
 	display:block;
+	margin-top: 10px;
 }
 
 #skymapcontainer {
@@ -141,24 +135,23 @@ button {
 
 #skymap {
 	display: block;
-    width: 340px;
-    height: 340px;
-    margin: 20px auto 0px auto;
+	width: 340px;
+	height: 340px;
+	margin: 20px auto 0px auto;
 }
 
 #legend {
-    text-align: left;
-    width: 460px;
-    font-family: Arial, Helvetica;
-	font-size: 0.75em;
-	margin-top: 5x;
-    margin-left: 10px;
+	text-align: left;
+	font-family: 'Roboto Light', Arial, Helvetica;
+	font-size: 0.65em;
+	margin-top: 10px;
+	margin-left: 30px;
 }
 
 #gpsdetails {
 	display: block;
 	width: 460px;
-    font-family: Arial, Helvetica;
+	font-family: Arial, Helvetica;
 	font-size: 0.80em;
 }
 
@@ -174,14 +167,30 @@ button {
 }
 
 #gpsfix {
+	background-color: rgba(64,64,64,0.5);
+	padding: 10px 10px 2px 10px;
+	border-radius: 5px;
 	margin-top: 50px;
+	width: 220px;
+	margin: auto auto;
 	font-size: 2.0em;
 	text-align: center;
+	color: red;
 }
 
 table, th, td {
 	border: none;
 	font-family: Arial, Helvetica;
 	font-size: 1.0em;
-	color: #333;
+	color: #eee;
+}
+
+.blink {
+  animation: blinker 1s step-start infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
