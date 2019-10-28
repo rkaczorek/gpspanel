@@ -14,7 +14,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gps, time, gevent, base64, cStringIO, math, socket
+import gps3, time, gevent, base64, math, socket
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
@@ -48,12 +48,12 @@ def gpsd_connect():
 			session = gps.gps("localhost", "2947")
 			session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 		except socket.error:
-			print "GPSD server is not available. Retrying in 5 seconds..."
+			print ("GPSD server is not available. Retrying in 5 seconds...")
 			time.sleep(5)
 		except KeyboardInterrupt:
 			quit()
 
-	print "GPSD server connected successfully"
+	print ("GPSD server connected successfully")
 
 def background_thread():
 	global session
@@ -91,7 +91,7 @@ def background_thread():
 		except AttributeError:
 			pass
 		except StopIteration:
-			print "GPSD server disconnected"
+			print ("GPSD server disconnected")
 			session = None
 		except KeyboardInterrupt:
 			quit()
@@ -103,7 +103,7 @@ def background_thread():
 def skymap(satellites):
 	# set image size
 	sz = 400
-	
+
 	# create empty image
 	img = Image.new('RGBA', (sz, sz), (255,255,255,0))
 	draw = ImageDraw.Draw(img)

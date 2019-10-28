@@ -8,25 +8,17 @@ GPS Panel is a simple web application to present information from your GPS. It d
 GPS Panel is based on [Python Flask](http://flask.pocoo.org/) micro-framework. It has a built-in webserver and by default listens on port 8625. Install the pre-requisites:
 
 ```
-$ sudo apt-get -y install python-gps
-$ sudo -H pip install Flask Flask-SocketIO gevent Pillow
+$sudo pip3 install -r requirements.txt 
 ```
 
-or
-
-```
-$sudo -H pip install -r requirements.txt 
-```
-
-Copy the **gpspanel** folder to /opt directory
+Copy the **gpspanel** folder to  **directory** (eg. /opt)
 
 # Usage
 
 The GPS Panel can be run as a standalone server. It can be started manually by invoking python:
 
 ```
-$ cd /opt/gpspanel
-$ python gpspanel.py
+$ python3 **directory**/gpspanel/gpspanel.py
 ```
 
 Then using your favorite web browser, go to http://your_ip_address:8625
@@ -43,7 +35,7 @@ After=multi-user.target
 [Service]
 Type=idle
 User=astroberry
-ExecStart=/usr/bin/python /opt/gpspanel/gpspanel.py
+ExecStart=/usr/bin/python3 **directory**/gpspanel/gpspanel.py
 Restart=always
 RestartSec=5
 
@@ -51,7 +43,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-The above service files assumes you copied the gpspanel directory to /opt, so change it to directory you installed gpspanel to on your target system. The user is also specified as **astroberry** and must be changed to your username.
+The above service files assumes you copied the gpspanel directory to [directory] - replace **directory** with real path to gpspanel to on your system. The user is also specified as **astroberry** and must be changed to your username.
 
 Copy the gpspanel.service file to **/etc/systemd/system**:
 
@@ -65,12 +57,7 @@ Now configure systemd to load the service file during boot:
 ```
 sudo systemctl daemon-reload
 sudo systemctl enable gpspanel.service
-```
-
-Finally, reboot the system for your changes to take effect:
-
-```
-sudo reboot
+sudo systenctl start gpspanel.service
 ```
 
 After startup, check the status of the GPS Panel service:
@@ -83,7 +70,7 @@ If all appears OK, you can start using GPS Panel using any browser.
 
 # Testing
 
-To test GPS Panel while you don't have your GPS connected you can use gps_test.log. Just run gpsfake to emulate gpsd service:
+To test GPS Panel while you don't have your GPS connected you can use gps_test.log. Just run gpsfake in your terminal to emulate gpsd service:
 
 ```
 gpsfake gps_test.log

@@ -5,7 +5,7 @@ After=multi-user.target
 [Service]
 Type=idle
 User=astroberry
-ExecStart=/usr/bin/python /opt/gpspanel/gpspanel.py
+ExecStart=/usr/bin/python3 /opt/gpspanel/gpspanel.py
 Restart=always
 RestartSec=5
 
