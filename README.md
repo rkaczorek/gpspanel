@@ -11,14 +11,14 @@ GPS Panel is based on [Python Flask](http://flask.pocoo.org/) micro-framework. I
 $sudo pip3 install -r requirements.txt 
 ```
 
-Copy the **gpspanel** folder to  **directory** (eg. /opt)
+Copy the **gpspanel** folder to  **DIRECTORY** (eg. /opt)
 
 # Usage
 
 The GPS Panel can be run as a standalone server. It can be started manually by invoking python:
 
 ```
-$ python3 **directory**/gpspanel/gpspanel.py
+$ python3 DIRECTORY/gpspanel/gpspanel.py
 ```
 
 Then using your favorite web browser, go to http://your_ip_address:8625
@@ -34,8 +34,8 @@ After=multi-user.target
 
 [Service]
 Type=idle
-User=astroberry
-ExecStart=/usr/bin/python3 **directory**/gpspanel/gpspanel.py
+User=nobody
+ExecStart=/usr/bin/python3 DIRECTORY/gpspanel/gpspanel.py
 Restart=always
 RestartSec=5
 
@@ -43,7 +43,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-The above service files assumes you copied the gpspanel directory to [directory] - replace **directory** with real path to gpspanel to on your system. The user is also specified as **astroberry** and must be changed to your username.
+The above service files assumes you copied the gpspanel directory to **DIRECTORY** - replace **DIRECTORY** with real path to gpspanel on your system.
 
 Copy the gpspanel.service file to **/etc/systemd/system**:
 
@@ -73,5 +73,5 @@ If all appears OK, you can start using GPS Panel using any browser.
 To test GPS Panel while you don't have your GPS connected you can use gps_test.log. Just run gpsfake in your terminal to emulate gpsd service:
 
 ```
-gpsfake gps_test.log
+gpsfake -c 1 gps_test.log
 ```

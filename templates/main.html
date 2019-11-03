@@ -129,12 +129,6 @@
 				}
 				if (gps.skymap) {
 					$("#skymap").attr("src", "data:image/png;base64,"+gps.skymap);
-					document.getElementById("gpsfix").style.display="none";
-				}
-				if (gps.mode > 1) {
-					document.getElementById("gpsfix").style.display="none";
-				} else {
-					document.getElementById("gpsfix").style.display="block";
 				}
             });
         });
@@ -184,9 +178,6 @@
 					<table>
 						<tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>
 					</table>
-				</div>
-				<div id="gpsfix" class="blink">
-						<p>Waiting for GPS</p>
 				</div>
 			</div>
 		</div>

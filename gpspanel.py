@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+# coding=utf-8
+
 #  Copyright(c) 2017 Radek Kaczorek  <rkaczorek AT gmail DOT com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
-# License version 2 as published by the Free Software Foundation.
+# License version 3 as published by the Free Software Foundation.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,17 +17,22 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gps3, time, gevent, base64, math, socket
+from gps3 import gps3
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 from PIL import Image, ImageDraw, ImageFont
+import time, gevent, base64, math, socket, io, sys
+
+__author__ = 'Radek Kaczorek'
+__copyright__ = 'Copyright 2017  Radek Kaczorek'
+__license__ = 'GPL-3'
+__version__ = '2.0.0'
 
 app = Flask(__name__, static_folder='assets')
 socketio = SocketIO(app)
-
-session = None
 thread = None
+
 
 # define colors for skymap
 white = (255, 255, 255)
@@ -41,64 +49,35 @@ magenta = (255, 0, 255)
 yellow = (255, 255, 0)
 orange = (255, 128, 0)
 
-def gpsd_connect():
-	global session
-	while session is None:
-		try:
-			session = gps.gps("localhost", "2947")
-			session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
-		except socket.error:
-			print ("GPSD server is not available. Retrying in 5 seconds...")
-			time.sleep(5)
-		except KeyboardInterrupt:
-			quit()
-
-	print ("GPSD server connected successfully")
-
 def background_thread():
-	global session
-	while True:
-		if session is None:
-			gpsd_connect()
-
-		try:
-			report = session.next()
-
-			if report['class'] == 'TPV':
+	for new_data in gpsd_socket:
+		if new_data:
+			data_stream.unpack(new_data)
+			if isinstance(data_stream.TPV['mode'], int):
 				socketio.emit('gpsdata', {
-				'mode': report.mode,
-				'latitude': report.lat,
-				'longitude': report.lon,
-				'gpstime': report.time,
-				'altitude': report.alt
+				'mode': data_stream.TPV['mode'],
+				'latitude': data_stream.TPV['lat'],
+				'longitude': data_stream.TPV['lon'],
+				'gpstime': data_stream.TPV['time'],
+				'altitude': data_stream.TPV['alt']
 				})
-			if report['class'] == 'SKY':
+			if isinstance(data_stream.SKY['satellites'], list):
 				socketio.emit('gpsdata', {
-				'sats': len(report.satellites),
-				'hdop': report.hdop,
-				'vdop': report.vdop
+				'sats': len(data_stream.SKY['satellites']),
+				'hdop': data_stream.SKY['hdop'],
+				'vdop': data_stream.SKY['vdop']
 				})
+			if isinstance(data_stream.SKY['satellites'], list):
 				satellites = "<table><tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>"
-				for s in report.satellites:
+				for s in data_stream.SKY['satellites']:
 					satellites = satellites + "<tr><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td></tr>" % (s['PRN'], s['el'], s['az'], s['ss'], s['used'])
 				satellites = satellites + "</table>"
 				socketio.emit('gpsdata', {
 				'satellites': satellites,
-				'skymap': skymap(report.satellites)
+				'skymap': skymap(data_stream.SKY['satellites'])
 				})
-		except KeyError:
-			pass
-		except AttributeError:
-			pass
-		except StopIteration:
-			print ("GPSD server disconnected")
-			session = None
-		except KeyboardInterrupt:
-			quit()
-#		except:
-#			pass
-
-		socketio.sleep(1)
+		else:
+			time.sleep(.1)
 
 def skymap(satellites):
 	# set image size
@@ -133,31 +112,30 @@ def skymap(satellites):
 	draw.text((sz * 0.98 - 8, sz * 0.98 / 2 + 5), "W", fill = white)
 	draw.text((sz * 0.02 + 5, sz * 0.98 / 2 - 8), "E", fill = white)
 
-	
+
 	# elevation lines
 	for num in range (15, 90, 15):
 		x0 = sz * 0.5 - num * 2
 		y0 = sz * 0.5 - num * 2
 		x1 = sz * 0.5 + num * 2
 		y1 = sz * 0.5 + num * 2
-		
+
 		# draw labels
 		draw.arc([(x0, y0), (x1, y1)], 0, 360, fill = ltgray)
 		draw.text((sz/2 * 0.98 - 10, sz * 0.5 - num * 2), '{:d}'.format(90 - num), fill = ltgray)
-	
+
 	# satellites
 	for s in satellites:
 		if (s['PRN'] != 0) and (s['el'] + s['az'] + s['ss'] != 0) and (s['el'] >= 0 and s['az'] >= 0):
 			color = brightgreen
-			if s['ss'] < 40:
+			if s['ss'] >= 40:
 				color = darkgreen
-			if s['ss'] < 35:
+			if s['ss'] >= 30:
 				color = yellow
 			if s['ss'] < 30:
 				color = red
 			if s['ss'] < 10:
 				color = black
-
 
 			# circle size
 			ssz = 16
@@ -177,7 +155,7 @@ def skymap(satellites):
 			# swap coords
 			x = sz * 0.98 - x;
 
-			# draw datellites
+			# draw satellites
 			if s['used'] == True:
 				draw.chord([(x, y), (x + ssz, y + ssz)], 0, 360, fill = color)
 			else:
@@ -195,15 +173,20 @@ def skymap(satellites):
 			draw.text((sz - 19, sz - 105), "40+", fill = black)
 			draw.text((sz - 19, sz - 85), "35+", fill = black)
 			draw.text((sz - 19, sz - 65), "30+", fill = black)
-			draw.text((sz - 19, sz - 45), "30+", fill = black)
+			draw.text((sz - 19, sz - 45), "-30", fill = black)
 			draw.text((sz - 19, sz - 25), "-10", fill = white)
 
 	# encode and return
-	imgdata = cStringIO.StringIO()
+	imgdata = io.BytesIO()
 	img.save(imgdata, format="PNG")
-	imgdata_encoded = base64.b64encode(imgdata.getvalue())
+	imgdata_encoded = base64.b64encode(imgdata.getvalue()).decode()
 	return imgdata_encoded
-	
+
+def shut_down():
+    gpsd_socket.close()
+    print('Keyboard interrupt received\nTerminated by user\nGood Bye.\n')
+    sys.exit(1)
+
 
 @app.route('/')
 def main():
@@ -216,7 +199,14 @@ def handle_connect():
 		thread = socketio.start_background_task(target=background_thread)
 
 if __name__ == '__main__':
+	gpsd_socket = gps3.GPSDSocket()
+	gpsd_socket.connect()
+	gpsd_socket.watch()
+	data_stream = gps3.DataStream()
+
+	socketio.run(app, host='0.0.0.0', port = 8625, debug=False)
+
 	try:
 		socketio.run(app, host='0.0.0.0', port = 8625, debug=False)
 	except KeyboardInterrupt:
-		quit()
+		shut_down()
