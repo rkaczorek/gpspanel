@@ -103,7 +103,6 @@
 				$("#mode").html(gps.mode);
 				$("#hdop").html(gps.hdop);
 				$("#vdop").html(gps.vdop);
-//				$("#gpssats").html(gps.satellites);
 
 				if (gps.gpstime) {
 					var d = new Date(gps.gpstime);
@@ -129,8 +128,12 @@
 					$("#lon").html(lonrad);
 				}
 
+				if (gps.sschart) {
+					$("#sschart").attr("src", "data:image/png;base64," + gps.sschart);
+				}
+
 				if (gps.skymap) {
-					$("#skymap").attr("src", "data:image/png;base64,"+gps.skymap);
+					$("#skymap").attr("src", "data:image/png;base64," + gps.skymap);
 				}
 
 				if (gps.satellites) {
@@ -206,6 +209,7 @@
 				</div>
 				<div id="gpssats"></div>
 			</div>
+			<img id="sschart" src=""/>
 		</div>
 		<div id="coordtime">
 			<span class="label">Latitude</span><span id="lat" class="gpsvalues">&nbsp;</span>

@@ -121,11 +121,22 @@ button {
 
 #gpsdetailscontainer {
 	display:none;
+	position: relative;
+	overflow:hidden;
 }
 
 #map {
 	width: 480px;
 	height: 400px;
+}
+
+#sschart {
+	display: block;
+	height:100px;
+	position:absolute;
+	bottom: 0px;
+	margin-left: 5px;
+	z-index: 100;
 }
 
 #skymap {
@@ -136,16 +147,17 @@ button {
 }
 
 #legend {
+	width: 350px;
 	text-align: left;
 	font-family: 'Roboto Light', Arial, Helvetica;
-	font-size: 0.65em;
-	margin: 10px 0px 0px 30px;
+	font-size: 0.80em;
+	margin: 5px auto 0px auto;
 }
 
 #gpsdetails {
 	display: block;
 	width: 460px;
-	font-family: Arial, Helvetica;
+	font-family: 'Roboto Light', Arial, Helvetica;
 	font-size: 0.80em;
 }
 
@@ -162,14 +174,14 @@ button {
 #gpssats {
 	display: inline-block;
 	vertical-align: top;
-	margin-left: 30px;
+	margin-left: 20px;
 }
 
 table, th, td {
 	border: none;
-	font-family: Arial, Helvetica;
+	font-family: 'Roboto Light', Arial, Helvetica;
 	font-size: 1.0em;
-	color: #eee;
+	color: #fff;
 }
 
 .blink {
