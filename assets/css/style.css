@@ -69,41 +69,33 @@ button {
 }
 
 #coordtime {
+	display: block;
 	width: 480px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	color: #eee;
+	color: #fff;
+	margin: 10px auto 0px auto;
 }
 
-#coordtime span {
-	display: inline-block;
-	border: 0px solid;
-	text-align: left;
-}
-
-.coordlabel {
-	font-size: 0.8em;
-	width: 80px;
-}
-
-.coord {
-    width: 150px;
+.label {
+	width: 70px;
 	margin-left: 5px;
-	font-weight: bold;
-	color: white;
 }
 
-.timelabel {
-	width: 80px;
-	margin-top: 5px;
-	font-size: 0.8em;
+.gpsfix_obtained {
+	background-color: #99cc00;
+}
+
+.gpsvalues {
+	width: 150px;
+	color: white;
+	font-size: 0.90em;
+	display: inline-block;
+	text-align: left;
+	margin-left: 5px;
 }
 
 .time {
-	width: 280px;
 	margin-top: 5px;
 	margin-left: 5px;
-	font-weight: bold;
 	color: white;
 }
 
@@ -171,18 +163,6 @@ button {
 	display: inline-block;
 	vertical-align: top;
 	margin-left: 30px;
-}
-
-#gpsfix {
-	background-color: rgba(64,64,64,0.5);
-	padding: 10px 10px 2px 10px;
-	border-radius: 5px;
-	margin-top: 50px;
-	width: 220px;
-	margin: auto auto;
-	font-size: 2.0em;
-	text-align: center;
-	color: red;
 }
 
 table, th, td {

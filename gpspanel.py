@@ -63,25 +63,13 @@ def background_thread():
 				})
 			if isinstance(data_stream.SKY['satellites'], list):
 				socketio.emit('gpsdata', {
-				'sats': len(data_stream.SKY['satellites']),
 				'hdop': data_stream.SKY['hdop'],
-				'vdop': data_stream.SKY['vdop']
-				})
-			if isinstance(data_stream.SKY['satellites'], list):
-				satellites = "<table><tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>"
-				for s in data_stream.SKY['satellites']:
-					if s['used']:
-						used = 'Y'
-					else:
-						used = 'N'
-					satellites = satellites + "<tr align=right><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td></tr>" % (s['PRN'], s['el'], s['az'], s['ss'], used)
-				satellites = satellites + "</table>"
-				socketio.emit('gpsdata', {
-				'satellites': satellites,
+				'vdop': data_stream.SKY['vdop'],
+				'satellites': data_stream.SKY['satellites'],
 				'skymap': skymap(data_stream.SKY['satellites'])
 				})
 		else:
-			time.sleep(.1)
+			time.sleep(0.1)
 
 def skymap(satellites):
 	# set image size

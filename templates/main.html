@@ -35,9 +35,9 @@
 		function LoadMap() {
 			document.getElementById("map").firstChild.data = "";
 
-			/* Set default to London */
-			var lon = -0.118092;
-			var lat = 51.509865;
+			/* Set default to Warsaw, Poland */
+			var lon = 21.017532;
+			var lat = 52.237049;
 
 			map = new ol.Map({
 				target: "map",
@@ -101,15 +101,16 @@
 				$("#longitude").html(gps.longitude);
 				$("#altitude").html(gps.altitude);
 				$("#mode").html(gps.mode);
-				$("#sats").html(gps.sats);
 				$("#hdop").html(gps.hdop);
 				$("#vdop").html(gps.vdop);
-				$("#gpssats").html(gps.satellites);
+//				$("#gpssats").html(gps.satellites);
+
 				if (gps.gpstime) {
 					var d = new Date(gps.gpstime);
 					var date = d.getUTCFullYear() + "-" + ("0" + d.getUTCMonth()).substr(-2) + "-" + ("0" + d.getUTCDate()).substr(-2) + "T" + ("0" + d.getUTCHours()).substr(-2) + ":" + ("0" + d.getUTCMinutes()).substr(-2) + ":" + ("0" + d.getUTCSeconds()).substr(-2);
 					$("#gtime").html(date);
 				}
+
 				if (gps.latitude && gps.longitude) {
 					var lat = gps.latitude;
 					var lon = gps.longitude;
@@ -127,8 +128,42 @@
 					$("#lat").html(latrad);
 					$("#lon").html(lonrad);
 				}
+
 				if (gps.skymap) {
 					$("#skymap").attr("src", "data:image/png;base64,"+gps.skymap);
+				}
+
+				if (gps.satellites) {
+					var satellites = "<table><tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>";
+					var used;
+					for (const sat in gps.satellites) {
+						if (gps.satellites[sat]['used']) {
+							used = 'Y';
+						} else {
+							used = 'N';
+						}
+						satellites = satellites + "<tr align=right><td>" + gps.satellites[sat]['PRN'] + "</td><td>" + gps.satellites[sat]['el'] + "</td><td>" + gps.satellites[sat]['az'] + "</td><td>" + gps.satellites[sat]['ss'] + "</td><td>" + used + "</td></tr>";
+					}
+					satellites = satellites + "</table>";
+
+					$("#sats").html(gps.satellites.length);
+					$("#gpssats").html(satellites);
+				}
+
+				if (typeof(gps.mode) == 'number') {
+					if (gps.mode == 3) {
+						$("#gpsfix").html('3D');
+						$("#gpsfix").removeClass("blink");
+						$("#gpsfix_obtained").addClass("gpsfix_obtained");
+					} else if (gps.mode == 2) {
+						$("#gpsfix").html('2D');
+						$("#gpsfix").removeClass("blink");
+						$("#gpsfix_obtained").addClass("gpsfix_obtained");
+					} else {
+						$("#gpsfix").html('waiting...');
+						$("#gpsfix").addClass("blink");
+						$("#gpsfix_obtained").removeClass("gpsfix_obtained");
+					}
 				}
             });
         });
@@ -169,17 +204,14 @@
 						<tr><td class="gpshdr">VDOP</td><td><span id="vdop"></span></td></tr>
 					</table>
 				</div>
-				<div id="gpssats">
-					<table>
-						<tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>
-					</table>
-				</div>
+				<div id="gpssats"></div>
 			</div>
 		</div>
 		<div id="coordtime">
-			<span class="coordlabel"><b>Latitude: </b></span><span id="lat" class="coord"></span>
-			<span class="coordlabel"><b>Longitude: </b></span><span id="lon" class="coord"></span><br />
-			<span class="timelabel"><b>UTC time: </b></span><span id="gtime" class="time"></span>
+			<span class="label">Latitude</span><span id="lat" class="gpsvalues">&nbsp;</span>
+			<span class="label">Longitude</span><span id="lon" class="gpsvalues">&nbsp;</span>
+			<span class="label">UTC time</span><span id="gtime" class="gpsvalues">&nbsp;</span>
+			<span id="gpsfix_obtained" class="label">Fix</span><span id="gpsfix" class="gpsvalues blink">waiting...</span>
 		</div>
 	</div>
 	<script type="text/javascript">
