@@ -137,11 +137,6 @@
 <body onload="LoadMap()">
 	<div class="container">
 		<h1>GPS Information</h1>
-		<div id="coordtime">
-			<span class="coordlabel"><b>Latitude: </b></span><span id="lat" class="coord"></span>
-			<span class="coordlabel"><b>Longitude: </b></span><span id="lon" class="coord"></span><br />
-			<span class="timelabel"><b>UTC time: </b></span><span id="gtime" class="time"></span>
-		</div>
 		<div id="displayctl">
 			<button id="togglemap" onclick="togglemap();">Map</button>
 			<button id="toggleskymap" onclick="toggleskymap();">Sky Map</button>
@@ -164,14 +159,14 @@
 				<div id="gpsinfo">
 					<table>
 						<tr><th colspan=2 align=left><h2>GPS Status</h2></th></tr>
-						<tr><td><b>Time</b></td><td><span id="gpstime"></span></td></tr>
-						<tr><td><b>Latitude</b></td><td><span id="latitude"></span></td></tr>
-						<tr><td><b>Longitude</b></td><td><span id="longitude"></span></td></tr>
-						<tr><td><b>Altitude</b></td><td><span id="altitude"></span></td></tr>
-						<tr><td><b>Fix Type</b></td><td><span id="mode"></span></td></tr>
-						<tr><td><b>Satellites</b></td><td><span id="sats"></span></td></tr>
-						<tr><td><b>HDOP</b></td><td><span id="hdop"></span></td></tr>
-						<tr><td><b>VDOP</b></td><td><span id="vdop"></span></td></tr>
+						<tr><td class="gpshdr">Time</td><td><span id="gpstime"></span></td></tr>
+						<tr><td class="gpshdr">Latitude</td><td><span id="latitude"></span></td></tr>
+						<tr><td class="gpshdr">Longitude</td><td><span id="longitude"></span></td></tr>
+						<tr><td class="gpshdr">Altitude</td><td><span id="altitude"></span></td></tr>
+						<tr><td class="gpshdr">Fix Type</td><td><span id="mode"></span></td></tr>
+						<tr><td class="gpshdr">Satellites</td><td><span id="sats"></span></td></tr>
+						<tr><td class="gpshdr">HDOP</td><td><span id="hdop"></span></td></tr>
+						<tr><td class="gpshdr">VDOP</td><td><span id="vdop"></span></td></tr>
 					</table>
 				</div>
 				<div id="gpssats">
@@ -180,6 +175,11 @@
 					</table>
 				</div>
 			</div>
+		</div>
+		<div id="coordtime">
+			<span class="coordlabel"><b>Latitude: </b></span><span id="lat" class="coord"></span>
+			<span class="coordlabel"><b>Longitude: </b></span><span id="lon" class="coord"></span><br />
+			<span class="timelabel"><b>UTC time: </b></span><span id="gtime" class="time"></span>
 		</div>
 	</div>
 	<script type="text/javascript">

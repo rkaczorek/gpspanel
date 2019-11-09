@@ -19,10 +19,10 @@
 
 from gps3 import gps3
 from gevent import monkey; monkey.patch_all()
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from flask_socketio import SocketIO
-from PIL import Image, ImageDraw, ImageFont
-import time, gevent, base64, math, socket, io, sys
+from PIL import Image, ImageDraw
+import time, base64, math, io, sys
 
 __author__ = 'Radek Kaczorek'
 __copyright__ = 'Copyright 2017  Radek Kaczorek'
@@ -70,7 +70,11 @@ def background_thread():
 			if isinstance(data_stream.SKY['satellites'], list):
 				satellites = "<table><tr><th colspan=5 align=left><h2>Visible Satellites<h2></th></tr><tr><th>PRN</th><th>Elevation</th><th>Azimuth</th><th>SS</th><th>Used</th></tr>"
 				for s in data_stream.SKY['satellites']:
-					satellites = satellites + "<tr><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td></tr>" % (s['PRN'], s['el'], s['az'], s['ss'], s['used'])
+					if s['used']:
+						used = 'Y'
+					else:
+						used = 'N'
+					satellites = satellites + "<tr align=right><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%s</td></tr>" % (s['PRN'], s['el'], s['az'], s['ss'], used)
 				satellites = satellites + "</table>"
 				socketio.emit('gpsdata', {
 				'satellites': satellites,
@@ -203,8 +207,6 @@ if __name__ == '__main__':
 	gpsd_socket.connect()
 	gpsd_socket.watch()
 	data_stream = gps3.DataStream()
-
-	socketio.run(app, host='0.0.0.0', port = 8625, debug=False)
 
 	try:
 		socketio.run(app, host='0.0.0.0', port = 8625, debug=False)

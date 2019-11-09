@@ -1,11 +1,11 @@
 [Unit]
 Description=GPS Panel
-After=multi-user.target
+After=multi-user.target gpsd.socket
 
 [Service]
 Type=idle
 User=nobody
-ExecStart=/usr/bin/python3 /opt/gpspanel/gpspanel.py
+ExecStart=/usr/bin/python3 /var/www/gpspanel/gpspanel.py
 Restart=always
 RestartSec=5
 

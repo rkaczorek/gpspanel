@@ -83,6 +83,7 @@ button {
 
 .coordlabel {
 	font-size: 0.8em;
+	width: 80px;
 }
 
 .coord {
@@ -93,7 +94,7 @@ button {
 }
 
 .timelabel {
-	width: 100px;
+	width: 80px;
 	margin-top: 5px;
 	font-size: 0.8em;
 }
@@ -112,6 +113,7 @@ button {
 
 #mapcontainer, #skymapcontainer, #gpsdetailscontainer {
 	width: 480px;
+	height: 400px;
 	margin-top: 10px;
 }
 
@@ -122,6 +124,7 @@ button {
 
 #skymapcontainer {
 	display:none;
+	margin-bottom: -10px;
 }
 
 #gpsdetailscontainer {
@@ -144,8 +147,7 @@ button {
 	text-align: left;
 	font-family: 'Roboto Light', Arial, Helvetica;
 	font-size: 0.65em;
-	margin-top: 10px;
-	margin-left: 30px;
+	margin: 10px 0px 0px 30px;
 }
 
 #gpsdetails {
@@ -158,8 +160,13 @@ button {
 #gpsinfo {
 	display: inline-block;
 	vertical-align: top;
-	width: 45%;
+	width: 50%;
 }
+
+.gpshdr {
+	width: 90px;
+}
+
 #gpssats {
 	display: inline-block;
 	vertical-align: top;

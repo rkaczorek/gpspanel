@@ -11,7 +11,7 @@ GPS Panel is based on [Python Flask](http://flask.pocoo.org/) micro-framework. I
 $sudo pip3 install -r requirements.txt 
 ```
 
-Copy the **gpspanel** folder to  **DIRECTORY** (eg. /opt)
+Copy the **gpspanel** folder to  **DIRECTORY** (eg. /var/www/)
 
 # Usage
 
