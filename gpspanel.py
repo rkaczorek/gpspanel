@@ -21,7 +21,7 @@ from gps3 import gps3
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import time, base64, math, io, sys
 
 __author__ = 'Radek Kaczorek'
@@ -79,7 +79,6 @@ def signal_strength(satellites):
 	# create empty image
 	img = Image.new('RGBA', imgsize, (255,255,255,8))
 	draw = ImageDraw.Draw(img)
-	font = ImageFont.truetype("assets/css/Roboto-Light.ttf", 14)
 
 	x = -3
 
@@ -98,12 +97,12 @@ def signal_strength(satellites):
 		x = x + 35
 		y = 100 - int(s['ss'])
 		draw.line((x,100,x,y), width=25, fill=color)
-		
+
 		# draw labels
 		draw.text((x - 12, 90), '{:3d}'.format(s['PRN']), fill=white)
-		
+
 	# draw title
-	draw.text((x / 2, 10), 'Signal Strength', fill=white, font=font)
+	draw.text((x / 2, 10), 'Signal Strength', fill=white)
 
 	# encode and return
 	imgdata = io.BytesIO()
@@ -118,7 +117,6 @@ def skymap(satellites):
 	# create empty image
 	img = Image.new('RGBA', (sz, sz), (255,255,255,0))
 	draw = ImageDraw.Draw(img)
-	font = ImageFont.truetype("assets/css/Roboto-Light.ttf", 15)
 
 	# draw arcs
 	draw.chord([(sz * 0.02, sz * 0.02), (sz * 0.98, sz * 0.98)], 0, 360, fill = mdgray, outline = black)
