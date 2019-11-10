@@ -29,7 +29,7 @@ body {
 }
 
 h1 {
-	background-image: url("/assets/img/gps.svg");
+	background-image: url("./../img/gps.svg");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 	background-color: rgb(110, 132, 163);

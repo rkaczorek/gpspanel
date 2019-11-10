@@ -77,7 +77,7 @@ def signal_strength(satellites):
 	imgsize = 450, 100
 
 	# create empty image
-	img = Image.new('RGBA', imgsize, (255,255,255,8))
+	img = Image.new('RGBA', imgsize, (255,255,255,32))
 	draw = ImageDraw.Draw(img)
 
 	x = -3
