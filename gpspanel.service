@@ -7,7 +7,7 @@ Type=idle
 User=nobody
 ExecStart=/usr/bin/python3 /var/www/gpspanel/gpspanel.py
 Restart=always
-RestartSec=5
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target

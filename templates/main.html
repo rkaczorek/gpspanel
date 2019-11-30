@@ -22,14 +22,13 @@
     <meta http-equiv="Content-Language" content="en,en-us"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.2.0/ol.css" type="text/css">
+    <link href="assets/css/ol.css" rel="stylesheet" type="text/css">
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
-    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/socket.io.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.2.0/ol.js"></script>
+	<script src="assets/js/ol.js"></script>
 	<script type="text/javascript">
 		<!--
 		function LoadMap() {
@@ -173,7 +172,7 @@
     </script>
 </head>
 <body onload="LoadMap()">
-	<div class="container">
+	<div class="panel_container">
 		<h1>GPS Information</h1>
 		<div id="displayctl">
 			<button id="togglemap" onclick="togglemap();">Map</button>

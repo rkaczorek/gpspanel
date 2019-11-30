@@ -31,7 +31,7 @@ body {
 h1 {
 	background-image: url("./../img/gps.svg");
 	background-repeat: no-repeat;
-	background-position: 5px 5px;
+	background-position: 0px 0px;
 	background-color: rgb(110, 132, 163);
 	border-radius: 5px;
 	margin-top: 0px;
@@ -40,6 +40,7 @@ h1 {
 	font-size: 20px;
 	color: white;
 	height: 1.2em;
+	font-weight: bold;
 }
 
 h2 {
@@ -64,8 +65,9 @@ button {
     color: #FF0000;
 }
 
-.container {
-	width: 480px;    
+.panel_container {
+	width: 480px;
+	margin-left: 0px;
 }
 
 #coordtime {
@@ -76,8 +78,11 @@ button {
 }
 
 .label {
-	width: 70px;
-	margin-left: 5px;
+	display: inline-block;
+	width: 75px;
+	font-size: 0.85em;
+	padding: 1px 5px;
+	background-color: #333;
 }
 
 .gpsfix_obtained {
@@ -100,6 +105,7 @@ button {
 }
 
 #displayctl {
+	width: 480px;
 	margin-top: 5px;
 }
 
