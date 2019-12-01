@@ -30,7 +30,6 @@
     <script src="assets/js/socket.io.min.js"></script>
 	<script src="assets/js/ol.js"></script>
 	<script type="text/javascript">
-		<!--
 		function LoadMap() {
 			document.getElementById("map").firstChild.data = "";
 
@@ -88,7 +87,6 @@
 				duration: 1000
 			});
 		}
-		-->
 	</script>
     <script type="text/javascript">
 	$(document).ready(function() {
@@ -105,24 +103,40 @@
 
 		if (gps.gpstime) {
 			var d = new Date(gps.gpstime);
-			var date = d.getUTCFullYear() + "-" + ("0" + d.getUTCMonth()).substr(-2) + "-" + ("0" + d.getUTCDate()).substr(-2) + "T" + ("0" + d.getUTCHours()).substr(-2) + ":" + ("0" + d.getUTCMinutes()).substr(-2) + ":" + ("0" + d.getUTCSeconds()).substr(-2);
+			var date = d.getUTCFullYear() + "-" + ("0" + (d.getUTCMonth() + 1)).substr(-2) + "-" + ("0" + d.getUTCDate()).substr(-2) + "T" + ("0" + d.getUTCHours()).substr(-2) + ":" + ("0" + d.getUTCMinutes()).substr(-2) + ":" + ("0" + d.getUTCSeconds()).substr(-2);
 			$("#gtime").html(date);
 		}
 
 		if (gps.latitude && gps.longitude) {
 			var lat = gps.latitude;
 			var lon = gps.longitude;
+			var lat_sign, lon_sign;
 
 			UpdateMapPos(lon,lat);
-					
+
+			if (lat < 0) {
+				lat_sign = '-';
+			} else {
+				lat_sign = '';
+			}
+
+                        if (lon < 0) {
+                                lon_sign = '-';
+                        } else {
+                                lon_sign = '';
+                        }
+
+			lat = Math.abs(lat);
+			lon = Math.abs(lon);
+
 			latdeg = parseInt(lat);
 			latmin = parseInt((lat - latdeg)*3600/60);
 			latsec = ((lat - latdeg - latmin/60)*3600).toFixed(4);
 			londeg = parseInt(lon);
 			lonmin = parseInt((lon - londeg)*3600/60);
 			lonsec = ((lon - londeg - lonmin/60)*3600).toFixed(4);
-			latrad = latdeg + ":" + ("0" + latmin).substr(-2) + ":" + ("0" + latsec).substr(-7);
-			lonrad = londeg + ":" + ("0" + lonmin).substr(-2) + ":" + ("0" + lonsec).substr(-7);
+			latrad = lat_sign + latdeg + ":" + ("0" + latmin).substr(-2) + ":" + ("0" + latsec).substr(-7);
+			lonrad = lon_sign + londeg + ":" + ("0" + lonmin).substr(-2) + ":" + ("0" + lonsec).substr(-7);
 			$("#lat").html(latrad);
 			$("#lon").html(lonrad);
 		}
