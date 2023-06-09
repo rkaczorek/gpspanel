@@ -17,17 +17,17 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
+import time, base64, math, io, sys
 from gps3 import gps3
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from PIL import Image, ImageDraw
-import time, base64, math, io, sys
 
 __author__ = 'Radek Kaczorek'
 __copyright__ = 'Copyright 2017  Radek Kaczorek'
 __license__ = 'GPL-3'
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 app = Flask(__name__, static_folder='assets')
 socketio = SocketIO(app)
@@ -159,42 +159,47 @@ def skymap(satellites):
 
 	# satellites
 	for s in satellites:
-		if (s['PRN'] != 0) and (s['el'] + s['az'] + s['ss'] != 0) and (s['el'] >= 0 and s['az'] >= 0):
-			if s['ss'] >= 40:
-				color = (153, 204, 0)
-			if s['ss'] >= 30:
-				color = (255, 153, 0)
-			if s['ss'] < 30:
-				color = (204, 0, 0)
-			if s['ss'] < 10:
-				color = (102, 102, 102)
+		#print('SV: {}'.format(s))
+		try:
+			# PRNs 159 and up don't have some fields. Just skip those.
+			if (s['PRN'] != 0) and (s['PRN'] < 159) and (s['el'] + s['az'] + s['ss'] != 0) and (s['el'] >= 0 and s['az'] >= 0):
+				if s['ss'] >= 40:
+					color = (153, 204, 0)
+				if s['ss'] >= 30:
+					color = (255, 153, 0)
+				if s['ss'] < 30:
+					color = (204, 0, 0)
+				if s['ss'] < 10:
+					color = (102, 102, 102)
 
-			# circle size
-			ssz = 16
+				# circle size
+				ssz = 16
 
-			#rotate coords -> 90deg W = 180deg trig
-			az = s['az'] + 90
-			az = math.radians(az)
+				#rotate coords -> 90deg W = 180deg trig
+				az = s['az'] + 90
+				az = math.radians(az)
 
-			# determine length of radius
-			r = sz * 0.98 * 0.5 - ssz
-			r -= int(r * s['el'] / 90)
+				# determine length of radius
+				r = sz * 0.98 * 0.5 - ssz
+				r -= int(r * s['el'] / 90)
 
-			# convert length/azimuth to cartesian
-			x = int((sz * 0.5) - (r * math.cos(az)))
-			y = int((sz * 0.5) - (r * math.sin(az)))
+				# convert length/azimuth to cartesian
+				x = int((sz * 0.5) - (r * math.cos(az)))
+				y = int((sz * 0.5) - (r * math.sin(az)))
 
-			# swap coords
-			x = sz * 0.98 - x;
+				# swap coords
+				x = sz * 0.98 - x
 
-			# draw satellites
-			if s['used'] == True:
-				draw.chord([(x, y), (x + ssz, y + ssz)], 0, 360, fill = color)
-			else:
-				draw.arc([(x, y), (x + ssz, y + ssz)], 0, 360, fill = color)
+				# draw satellites
+				if s['used'] == True:
+					draw.chord([(x, y), (x + ssz, y + ssz)], 0, 360, fill = color)
+				else:
+					draw.arc([(x, y), (x + ssz, y + ssz)], 0, 360, fill = color)
 
-			# draw labels
-			draw.text((x + ssz/5, y + ssz/5), '{:2d}'.format(s['PRN']), fill = white)
+				# draw labels
+				draw.text((x + ssz/5, y + ssz/5), '{:2d}'.format(s['PRN']), fill = white)
+		except (ValueError, KeyError) as error:
+			sys.stderr.write('Data error: {}: {}\n'.format(str(error), s))
 
 	# draw legend
 	draw.rectangle([(sz - 26, sz - 90), (sz - 1, sz - 10)], fill = (153, 204, 0), outline = black)
@@ -213,9 +218,9 @@ def skymap(satellites):
 	return imgdata_encoded
 
 def shut_down():
-    gpsd_socket.close()
-    print('Keyboard interrupt received\nTerminated by user\nGood Bye.\n')
-    sys.exit(1)
+	gpsd_socket.close()
+	print('Keyboard interrupt received\nTerminated by user\nGood Bye.\n')
+	sys.exit(1)
 
 
 @app.route('/')
