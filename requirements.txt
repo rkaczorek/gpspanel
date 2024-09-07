@@ -8,7 +8,7 @@ gps3==0.33.3
 greenlet==2.0.2
 importlib-metadata==6.6.0
 itsdangerous==2.1.2
-Jinja2==3.1.2
+Jinja2==3.1.4
 MarkupSafe==2.1.2
 Pillow==10.3.0
 python-engineio==4.4.1
