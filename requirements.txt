@@ -13,7 +13,7 @@ MarkupSafe==2.1.2
 Pillow==10.3.0
 python-engineio==4.4.1
 python-socketio==5.8.0
-Werkzeug==2.3.4
+Werkzeug==3.0.3
 zipp==3.19.1
 zope.event==4.6
 zope.interface==6.0
