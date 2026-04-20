@@ -10,7 +10,7 @@ importlib-metadata==6.6.0
 itsdangerous==2.1.2
 Jinja2==3.1.6
 MarkupSafe==2.1.2
-Pillow==12.1.1
+Pillow==12.2.0
 python-engineio==4.4.1
 python-socketio==5.14.0
 Werkzeug==3.1.6
